@@ -134,7 +134,7 @@ postController.post_DELETE = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw createError(401, { errors: errors.array() });
+        throw createError(400, { errors: errors.array() });
       }
 
       const { postId } = req.params;

@@ -12,6 +12,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
+    unique: [true, 'Email already exists'],
     trim: true,
     maxLength: [75, 'Email must be less than 75 characters'],
     minLength: [5, 'Email must be at least 5 characters'],
@@ -19,7 +20,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    maxLength: [30, 'Password must not be longer than 30 characthers'],
+    maxLength: [100, 'Password must not be longer than 100 characters'],
     required: [true, 'Password is required'],
   },
   role: {
