@@ -11,28 +11,40 @@ const validatePost = [
     .isString()
     .withMessage('Title must be a string')
     .trim()
+    .isLength({ min: 3 })
+    .withMessage('Title must be at least 3 characters')
     .isLength({ max: 50 })
     .withMessage('Title must be less than 50 characters')
     .notEmpty()
     .withMessage('Title cannot be empty')
     .escape(),
 
-  body('author').exists().withMessage('Author is required').escape(),
+  body('author')
+    .exists()
+    .withMessage('Author is required')
+    .isMongoId()
+    .withMessage('Author must be a valid Mongo ID')
+    .escape(),
 
   body('textContent')
     .exists()
     .withMessage('Text content is required')
     .isString()
     .withMessage('Text content must be a string')
+    .trim()
+    .isLength({ max: 2000 })
+    .withMessage('Content must be less than 2000 characters')
+    .notEmpty()
+    .withMessage('Content cannot be empty')
     .escape(),
 
   body('status')
-    .exists()
-    .withMessage('Status is required')
+    .optional()
     .isString()
     .withMessage('Status must be a string')
     .isIn(['draft', 'published', 'removed'])
-    .withMessage('Invalid status value'),
+    .withMessage('Invalid status value')
+    .escape(),
 ];
 
 postController.posts_GET = async (req, res, next) => {
@@ -127,9 +139,9 @@ postController.post_DELETE = [
 
       const { postId } = req.params;
 
-      const result = await Post.findByIdAndDelete(postId);
+      const deletedPost = await Post.findByIdAndDelete(postId);
 
-      res.json(result);
+      res.json(deletedPost);
     } catch (err) {
       next(err);
     }

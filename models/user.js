@@ -19,6 +19,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
+    maxLength: [30, 'Password must not be longer than 30 characthers'],
     required: [true, 'Password is required'],
   },
   role: {
