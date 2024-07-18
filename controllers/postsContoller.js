@@ -1,5 +1,5 @@
 import Post from '../models/post.js';
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 import createError from 'http-errors';
 
 const postController = {};
@@ -49,9 +49,9 @@ postController.posts_GET = async (req, res, next) => {
 postController.post_GET = async (req, res, next) => {
   try {
     const query = { status: 'published' };
-    const { id } = req.params;
+    const { postId } = req.params;
 
-    const post = await Post.findById(id);
+    const post = await Post.findById(postId);
 
     res.json(post);
   } catch (err) {
@@ -87,7 +87,7 @@ postController.posts_POST = [
 
 postController.posts_PUT = [
   validatePost,
-  body('id').exists().withMessage('Missing ID value'),
+  param('postId').exists().withMessage('Missing ID value'),
   async (req, res, next) => {
     try {
       const errors = validationResult(req);
@@ -95,15 +95,16 @@ postController.posts_PUT = [
         throw createError(400, { errors: errors.array() });
       }
 
-      const { title, author, textContent, status, id } = req.body;
+      const { title, author, textContent, status } = req.body;
+      const { postId } = req.params;
 
-      const existingPost = await Post.findById(id);
+      const existingPost = await Post.findById(postId);
       if (!existingPost) {
         throw createError(404, 'Post not found');
       }
 
       const updatedPost = await Post.findByIdAndUpdate(
-        id,
+        postId,
         { title, author, textContent, status },
         { new: true }
       );
@@ -116,7 +117,7 @@ postController.posts_PUT = [
 ];
 
 postController.post_DELETE = [
-  body('id').exists().withMessage('ID field is missing'),
+  param('id').exists().withMessage('Missing ID value'),
   async (req, res, next) => {
     try {
       const errors = validationResult(req);
@@ -124,9 +125,9 @@ postController.post_DELETE = [
         throw createError(401, { errors: errors.array() });
       }
 
-      const { id } = req.body;
+      const { postId } = req.params;
 
-      const result = await Post.findByIdAndDelete(id);
+      const result = await Post.findByIdAndDelete(postId);
 
       res.json(result);
     } catch (err) {
