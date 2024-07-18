@@ -6,12 +6,7 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 
 //Routes
-import {
-  commentsRouter,
-  postsRouter,
-  usersRouter,
-  authRouter,
-} from './routes/barrel.js';
+import { postsRouter, usersRouter, authRouter } from './routes/barrel.js';
 
 //Setup
 const app = express();
