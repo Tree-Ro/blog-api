@@ -43,7 +43,7 @@ commentsController.comments_GET = async (req, res, next) => {
   try {
     const { postId } = req.params;
 
-    const query = { _id: postId, status: 'published' };
+    const query = { _id: postId };
 
     const comments = await Post.find(query, 'comments')
       .populate('comments')

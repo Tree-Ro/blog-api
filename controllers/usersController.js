@@ -142,14 +142,11 @@ usersController.user_POST = [
       const { name, email, password } = req.body;
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = new User(
-        {
-          name,
-          email,
-          password: hashedPassword,
-        },
-        { new: true }
-      );
+      const user = new User({
+        name,
+        email,
+        password: hashedPassword,
+      });
       await user.save();
 
       res.json(user);

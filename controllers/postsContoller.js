@@ -1,3 +1,4 @@
+import { text } from 'express';
 import Post from '../models/post.js';
 import { body, param, validationResult } from 'express-validator';
 import createError from 'http-errors';
@@ -110,16 +111,19 @@ postController.posts_PUT = [
       const { title, author, textContent, status } = req.body;
       const { postId } = req.params;
 
-      const existingPost = await Post.findById(postId);
-      if (!existingPost) {
+      const update = {};
+      if (title) update.title = title;
+      if (author) update.author = author;
+      if (textContent) update.textContent = textContent;
+      if (status) update.status = status;
+
+      const updatedPost = await Post.findByIdAndUpdate(postId, update, {
+        new: true,
+      });
+
+      if (!updatedPost) {
         throw createError(404, 'Post not found');
       }
-
-      const updatedPost = await Post.findByIdAndUpdate(
-        postId,
-        { title, author, textContent, status },
-        { new: true }
-      );
 
       res.status(200).json(updatedPost);
     } catch (err) {
